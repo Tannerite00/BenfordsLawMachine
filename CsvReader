@@ -4,6 +4,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import csv
+import matplotlib.pyplot as plt
 
 # Initialize a dictionary to count digits from 1 to 9
 digit_counts = {str(i): 0 for i in range(1, 10)}
@@ -38,10 +39,14 @@ def process_csv():
                         digit_counts[char] += 1
                         total_digit_count += 1
 
-    # Print the percentage of the total for each digit from 1 to 9
-    for digit, count in digit_counts.items():
-        percentage = (count / total_digit_count) * 100 if total_digit_count > 0 else 0
-        print(f'Digit {digit}: {count} instances ({percentage:.2f}%)')
+        # Plot the bar chart
+        digits = list(digit_counts.keys())
+        counts = list(digit_counts.values())
+        plt.bar(digits, counts)
+        plt.xlabel('Digit')
+        plt.ylabel('Count')
+        plt.title('Digit Counts')
+        plt.show()
 
 # Create the main application window
 root = tk.Tk()
