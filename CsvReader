@@ -5,13 +5,13 @@ import tkinter as tk
 from tkinter import filedialog
 import csv
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Initialize a dictionary to count digits from 1 to 9
 digit_counts = {str(i): 0 for i in range(1, 10)}
 
 # Initialize a variable to count the total number of digits
 total_digit_count = 0
-
 
 # Function to handle the file selection
 def browse_file():
@@ -45,13 +45,25 @@ def process_csv():
                         digit_counts[char] += 1
                         total_digit_count += 1
 
+        # Calculate percentages for each digit
+        digit_percentages = {digit: (count / total_digit_count) * 100 if total_digit_count > 0 else 0 for digit, count in digit_counts.items()}
+
+        # Calculate expected Benford's Law percentages
+        expected_percentages = {str(digit): np.log10(1 + 1 / digit) * 100 for digit in range(1, 10)}
+
         # Plot the bar chart
-        digits = list(digit_counts.keys())
-        counts = list(digit_counts.values())
-        plt.bar(digits, counts)
+        digits = list(digit_percentages.keys())
+        percentages = list(digit_percentages.values())
+        plt.bar(digits, percentages, label='Actual Percentages')
+
+        # Plot the expected Benford's Law line (red)
+        expected_percentages_values = list(expected_percentages.values())
+        plt.plot(digits, expected_percentages_values, 'r', label='Benford\'s Law')
+
         plt.xlabel('Digit')
-        plt.ylabel('Count')
-        plt.title('Digit Counts')
+        plt.ylabel('Percentage (%)')
+        plt.title('Digit Percentages vs. Benford\'s Law')
+        plt.legend()
         plt.show()
 
 # Create the main application window
