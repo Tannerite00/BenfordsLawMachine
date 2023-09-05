@@ -54,10 +54,18 @@ def process_csv():
         # Plot the bar chart
         digits = list(digit_percentages.keys())
         percentages = list(digit_percentages.values())
-        plt.bar(digits, percentages, label='Actual Percentages')
+        expected_percentages_values = list(expected_percentages.values())
+
+        # Determine bar colors based on alignment with Benford's Law
+        bar_colors = ['blue' if abs(percentage - expected_percentages[digit]) <= 5 else
+                    'yellow' if abs(percentage - expected_percentages[digit]) <= 7.5 else
+                    'orange' if abs(percentage - expected_percentages[digit]) <= 10 else
+                    'red' for digit, percentage in digit_percentages.items()]
+
+        # Plot the bars with colors
+        plt.bar(digits, percentages, color=bar_colors, label='Actual Percentages')
 
         # Plot the expected Benford's Law line (red)
-        expected_percentages_values = list(expected_percentages.values())
         plt.plot(digits, expected_percentages_values, 'r', label='Benford\'s Law')
 
         plt.xlabel('Digit')
@@ -84,3 +92,4 @@ button_process.pack()
 
 # Start the Tkinter main loop
 root.mainloop()
+
