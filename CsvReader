@@ -1,11 +1,10 @@
-# This is the benford's law machine. takes a csv file and counts how many instances of each number 1 - 9. 
-# In sets that obey the law, the number 1 appears as the leading significant digit about 30% of the time, while 9 appears as the leading significant digit less than 5% of the time.
-
 import tkinter as tk
 from tkinter import filedialog
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import stats
+import pandas as pd
 
 # Initialize a dictionary to count digits from 1 to 9
 digit_counts = {str(i): 0 for i in range(1, 10)}
@@ -20,8 +19,8 @@ def browse_file():
         entry_file_path.delete(0, tk.END)  # Clear the entry field
         entry_file_path.insert(0, file_path)  # Set the selected file path
 
-# Function to process the selected CSV file
-def process_csv():
+# Function to process the selected CSV file and run Benford's Law analysis
+def process_benfords_law():
     global total_digit_count  # Declare total_digit_count as a global variable
     global digit_counts  # Declare digit_counts as a global variable
 
@@ -37,7 +36,7 @@ def process_csv():
             for row in csvreader:
                 # Join the elements in each row to form a single string
                 row_str = ''.join(row)
-                
+
                 # Iterate through characters in the row
                 for char in row_str:
                     if char.isdigit() and '1' <= char <= '9':
@@ -74,6 +73,120 @@ def process_csv():
         plt.legend()
         plt.show()
 
+# Function to run Gaussian distribution analysis
+def process_gaussian_distribution():
+    global total_digit_count  # Declare total_digit_count as a global variable
+    global digit_counts  # Declare digit_counts as a global variable
+
+    csv_file_path = entry_file_path.get()
+    if csv_file_path:
+        # Clear the previous counts
+        digit_counts = {str(i): 0 for i in range(1, 10)}
+        total_digit_count = 0
+
+        # Open the CSV file and read its contents
+        with open(csv_file_path, newline='') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                # Join the elements in each row to form a single string
+                row_str = ''.join(row)
+
+                # Iterate through characters in the row
+                for char in row_str:
+                    if char.isdigit() and '1' <= char <= '9':
+                        # Increment the count for the digit
+                        digit_counts[char] += 1
+                        total_digit_count += 1
+
+        # Calculate percentages for each digit
+        digit_percentages = {digit: (count / total_digit_count) * 100 if total_digit_count > 0 else 0 for digit, count in digit_counts.items()}
+
+        # Calculate z-scores for each digit's percentage
+        z_scores = {digit: (digit_percentages[digit] - 11.1) / 2.33 for digit in digit_percentages}  # Assuming a mean of 11.1% and standard deviation of 2.33%
+
+        # Define a threshold for identifying outliers (e.g., z-score > 3 or < -3)
+        threshold = 3
+        outliers = [digit for digit, z_score in z_scores.items() if abs(z_score) > threshold]
+
+        # Plot the bar chart with colors based on outlier detection
+        digits = list(digit_percentages.keys())
+        percentages = list(digit_percentages.values())
+
+        # Determine bar colors based on outlier detection
+        bar_colors = ['blue' if abs(z_scores[digit]) <= 1 else
+                    'yellow' if abs(z_scores[digit]) <= 2 else
+                    'orange' if abs(z_scores[digit]) <= threshold else
+                    'red' for digit in digits]
+
+        # Plot the bars with colors
+        plt.bar(digits, percentages, color=bar_colors, label='Actual Percentages')
+
+        # Generate a Gaussian distribution line
+        mean = 11.1  # Mean of the expected Gaussian distribution
+        std_dev = 2.33  # Standard deviation of the expected Gaussian distribution
+        x = np.linspace(int(min(digits)), int(max(digits)), 100)  # Convert digits to integers
+        y = stats.norm.pdf(x, mean, std_dev) * 100  # Multiply by 100 for percentage scale
+
+        # Plot the expected Gaussian distribution line (red)
+        plt.plot(x, y, 'r--', label='Gaussian Distribution')
+
+        plt.xlabel('Digit')
+        plt.ylabel('Percentage (%)')
+        plt.title('Digit Percentages vs. Gaussian Distribution (Outlier Detection)')
+        plt.legend()
+
+        # Print the detected outliers
+        if outliers:
+            print(f'Detected Outliers: {", ".join(outliers)}')
+
+        plt.show()
+
+# Function to run transaction analysis 
+def analyze_transactions_from_csv(csv_file_path):
+    try:
+        # Load transaction data from the selected CSV file
+        data = pd.read_csv(csv_file_path)
+
+        # Define a function to clean and convert 'Total' values to float
+        def clean_and_convert_total(total_str):
+            total_str = total_str.replace(',', '').replace(' ', '')
+            try:
+                return float(total_str)
+            except ValueError:
+                return 0.0
+
+        # Clean and convert 'Total' column values
+        data['Total'] = data['Total'].apply(clean_and_convert_total)
+
+        # Group transactions by 'Item' and 'Rep' and calculate total spending
+        grouped_data = data.groupby(['Item', 'Rep'], as_index=False)['Total'].sum()
+
+        # Sort the entire grouped_data DataFrame in ascending order by 'Total'
+        grouped_data_sorted = grouped_data.sort_values(by='Total')
+
+        # Get unique items for x-axis labels
+        items = grouped_data_sorted['Item'].unique()
+
+        # Create a bar chart for each item group
+        for item in items:
+            item_data = grouped_data_sorted[grouped_data_sorted['Item'] == item]
+
+            reps = item_data['Rep']
+            totals = item_data['Total']
+
+            # Set a minimum y-axis value of 0 and a maximum of 2000
+            plt.yticks(range(len(totals)), totals)
+
+            plt.barh(range(len(totals)), reps)
+            plt.xlabel('Rep')
+            plt.ylabel('Dollars Spent (Total)')
+            plt.title(f'Spending by Rep for {item}')
+            plt.xticks(rotation=45)
+            plt.show()
+
+    except FileNotFoundError:
+        print("CSV file not found. Please select a valid CSV file.")
+
 # Create the main application window
 root = tk.Tk()
 root.title("CSV File Processor")
@@ -82,13 +195,17 @@ root.title("CSV File Processor")
 label_instruction = tk.Label(root, text="Select a CSV file:")
 entry_file_path = tk.Entry(root, width=40)
 button_browse = tk.Button(root, text="Browse", command=browse_file)
-button_process = tk.Button(root, text="Process CSV", command=process_csv)
+button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=process_benfords_law)
+button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=process_gaussian_distribution)
+button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get()))
 
 # Arrange widgets in the layout
 label_instruction.pack()
 entry_file_path.pack()
 button_browse.pack()
-button_process.pack()
+button_process_benfords_law.pack()
+button_process_gaussian.pack()
+button_process_transaction_analysis.pack()
 
 # Start the Tkinter main loop
 root.mainloop()
