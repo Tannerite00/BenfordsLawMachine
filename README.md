@@ -11,3 +11,7 @@ A graph of the numbers is also created to help the user viusalize the distributi
 
 A simple transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, it sums them under the individual's name. 
 Then a graph is shown for each different item in the csv file, with a histogram depicting how much was spent and by whome. 
+
+# Gaussian Distribution
+
+Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small trnasaction it is made clearly visible for the user to see. 
