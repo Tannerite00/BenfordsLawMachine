@@ -1,4 +1,4 @@
-# BenfordsLawMachine
+# Benfords Law
 
 A simple python script that takes a CSV and applies Benford's Law to it, where in any financial data typically the number 1 appears approx. 30% of the time, with a sloping distribution down to 9 that should appear approx. 5% of the time. 
 
