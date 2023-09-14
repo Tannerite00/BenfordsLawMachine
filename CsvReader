@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 import pandas as pd
+import plotly.express as px
 
 # Initialize a dictionary to count digits from 1 to 9
 digit_counts = {str(i): 0 for i in range(1, 10)}
@@ -149,7 +150,7 @@ def analyze_transactions_from_csv(csv_file_path):
 
         # Define a function to clean and convert 'Total' values to float
         def clean_and_convert_total(total_str):
-            total_str = total_str.replace(',', '').replace(' ', '')
+            total_str = total_str.replace('$', '').replace(',', '').strip()
             try:
                 return float(total_str)
             except ValueError:
@@ -158,31 +159,14 @@ def analyze_transactions_from_csv(csv_file_path):
         # Clean and convert 'Total' column values
         data['Total'] = data['Total'].apply(clean_and_convert_total)
 
-        # Group transactions by 'Item' and 'Rep' and calculate total spending
-        grouped_data = data.groupby(['Item', 'Rep'], as_index=False)['Total'].sum()
+          # Create an interactive horizontal histogram using Plotly
+        fig = px.bar(data, x='Total', y='Rep', color='Item', orientation='h',
+                     title='Total Spending by Rep',
+                     labels={'Total': 'Dollars Spent (Total)', 'Rep': 'Rep'})
 
-        # Sort the entire grouped_data DataFrame in ascending order by 'Total'
-        grouped_data_sorted = grouped_data.sort_values(by='Total')
+        # Show the interactive plot
+        fig.show()
 
-        # Get unique items for x-axis labels
-        items = grouped_data_sorted['Item'].unique()
-
-        # Create a bar chart for each item group
-        for item in items:
-            item_data = grouped_data_sorted[grouped_data_sorted['Item'] == item]
-
-            reps = item_data['Rep']
-            totals = item_data['Total']
-
-            # Set a minimum y-axis value of 0 and a maximum of 2000
-            plt.yticks(range(len(totals)), totals)
-
-            plt.barh(range(len(totals)), reps)
-            plt.xlabel('Rep')
-            plt.ylabel('Dollars Spent (Total)')
-            plt.title(f'Spending by Rep for {item}')
-            plt.xticks(rotation=45)
-            plt.show()
 
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
@@ -209,4 +193,3 @@ button_process_transaction_analysis.pack()
 
 # Start the Tkinter main loop
 root.mainloop()
-
