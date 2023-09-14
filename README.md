@@ -10,7 +10,7 @@ A graph of the numbers is also created to help the user viusalize the distributi
 # Transaction Analysis
 
 A simple transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, the graph will sum them but also show a partition to display the different transactions. 
-Then a graph is shown for each different item in the csv file, with a histogram depicting how much was spent and by whome. 
+The graph is interactive, so specific items can be viewed together with others or on their own, and the graph can be zoomed in and out to see all parts of the data or just specific parts the user wants to focus on. 
 
 # Gaussian Distribution
 
