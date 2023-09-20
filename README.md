@@ -7,11 +7,13 @@ The basic theory is that when someone commits fraud, they do not do it in increm
 This script allows one to browse their file explorer, choose a csv file, and then process it to see the distribution of numbers in a file as well as displays their percentage of the overall amount of numbers counted. 
 A graph of the numbers is also created to help the user viusalize the distribution. 
 
+# Gaussian Distribution
+
+Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small trnasaction it is made clearly visible for the user to see. WIP: Plots a normal distribution for each item group, with first and second std dev lines plotted to easily pick out outliers. 
+
+
 # Transaction Analysis
 
 A simple transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, the graph will sum them but also show a partition to display the different transactions. 
 The graph is interactive, so specific items can be viewed together with others or on their own, and the graph can be zoomed in and out to see all parts of the data or just specific parts the user wants to focus on. 
 
-# Gaussian Distribution
-
-Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small trnasaction it is made clearly visible for the user to see. WIP: Plots a normal distribution for each item group, with first and second std dev lines plotted to easily pick out outliers. 
