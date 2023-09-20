@@ -4,6 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
+from scipy.stats import norm
 import pandas as pd
 import plotly.express as px
 
@@ -19,6 +20,14 @@ def browse_file():
     if file_path:
         entry_file_path.delete(0, tk.END)  # Clear the entry field
         entry_file_path.insert(0, file_path)  # Set the selected file path
+
+# Define a function to clean and convert 'Total' values to float
+def clean_and_convert_total(total_str):
+    total_str = total_str.replace('$', '').replace(',', '').strip()
+    try:
+        return float(total_str)
+    except ValueError:
+        return np.nan
 
 # Function to process the selected CSV file and run Benford's Law analysis
 def process_benfords_law():
@@ -75,86 +84,47 @@ def process_benfords_law():
         plt.show()
 
 # Function to run Gaussian distribution analysis
-def process_gaussian_distribution():
-    global total_digit_count  # Declare total_digit_count as a global variable
-    global digit_counts  # Declare digit_counts as a global variable
+def process_gaussian_distribution(csv_file_path):
+    try:
+        # Load transaction data from the selected CSV file
+        data = pd.read_csv(csv_file_path)
 
-    csv_file_path = entry_file_path.get()
-    if csv_file_path:
-        # Clear the previous counts
-        digit_counts = {str(i): 0 for i in range(1, 10)}
-        total_digit_count = 0
+        # Clean and convert 'Total' column values
+        data['Total'] = data['Total'].apply(clean_and_convert_total)
 
-        # Open the CSV file and read its contents
-        with open(csv_file_path, newline='') as csvfile:
-            csvreader = csv.reader(csvfile)
-            for row in csvreader:
-                # Join the elements in each row to form a single string
-                row_str = ''.join(row)
+        # Remove rows with NaN values in the 'Total' column
+        data = data.dropna(subset=['Total'])
 
-                # Iterate through characters in the row
-                for char in row_str:
-                    if char.isdigit() and '1' <= char <= '9':
-                        # Increment the count for the digit
-                        digit_counts[char] += 1
-                        total_digit_count += 1
+        # Fit a normal distribution to the data
+        mu, std = norm.fit(data['Total'])
 
-        # Calculate percentages for each digit
-        digit_percentages = {digit: (count / total_digit_count) * 100 if total_digit_count > 0 else 0 for digit, count in digit_counts.items()}
+        # Create a histogram
+        plt.figure(figsize=(10, 6))
+        plt.hist(data['Total'], bins=30, density=True, alpha=0.6, color='blue')
 
-        # Calculate z-scores for each digit's percentage
-        z_scores = {digit: (digit_percentages[digit] - 11.1) / 2.33 for digit in digit_percentages}  # Assuming a mean of 11.1% and standard deviation of 2.33%
+        # Create a range of values for the x-axis based on the normal distribution
+        xmin, xmax = plt.xlim()
+        x = np.linspace(xmin, xmax, 100)
+        p = norm.pdf(x, mu, std)
 
-        # Define a threshold for identifying outliers (e.g., z-score > 3 or < -3)
-        threshold = 3
-        outliers = [digit for digit, z_score in z_scores.items() if abs(z_score) > threshold]
+        # Plot the fitted normal distribution
+        plt.plot(x, p, 'k', linewidth=2)
+        title = "Fit results: mu = %.2f,  std = %.2f" % (mu, std)
+        plt.title(title)
 
-        # Plot the bar chart with colors based on outlier detection
-        digits = list(digit_percentages.keys())
-        percentages = list(digit_percentages.values())
-
-        # Determine bar colors based on outlier detection
-        bar_colors = ['blue' if abs(z_scores[digit]) <= 1 else
-                    'yellow' if abs(z_scores[digit]) <= 2 else
-                    'orange' if abs(z_scores[digit]) <= threshold else
-                    'red' for digit in digits]
-
-        # Plot the bars with colors
-        plt.bar(digits, percentages, color=bar_colors, label='Actual Percentages')
-
-        # Generate a Gaussian distribution line
-        mean = 11.1  # Mean of the expected Gaussian distribution
-        std_dev = 2.33  # Standard deviation of the expected Gaussian distribution
-        x = np.linspace(int(min(digits)), int(max(digits)), 100)  # Convert digits to integers
-        y = stats.norm.pdf(x, mean, std_dev) * 100  # Multiply by 100 for percentage scale
-
-        # Plot the expected Gaussian distribution line (red)
-        plt.plot(x, y, 'r--', label='Gaussian Distribution')
-
-        plt.xlabel('Digit')
-        plt.ylabel('Percentage (%)')
-        plt.title('Digit Percentages vs. Gaussian Distribution (Outlier Detection)')
-        plt.legend()
-
-        # Print the detected outliers
-        if outliers:
-            print(f'Detected Outliers: {", ".join(outliers)}')
-
+        plt.xlabel('Dollars Spent (Total)')
+        plt.ylabel('Frequency')
         plt.show()
+
+    except FileNotFoundError:
+        print("CSV file not found. Please select a valid CSV file.")
+
 
 # Function to run transaction analysis 
 def analyze_transactions_from_csv(csv_file_path):
     try:
         # Load transaction data from the selected CSV file
         data = pd.read_csv(csv_file_path)
-
-        # Define a function to clean and convert 'Total' values to float
-        def clean_and_convert_total(total_str):
-            total_str = total_str.replace('$', '').replace(',', '').strip()
-            try:
-                return float(total_str)
-            except ValueError:
-                return 0.0
 
         # Clean and convert 'Total' column values
         data['Total'] = data['Total'].apply(clean_and_convert_total)
@@ -180,7 +150,7 @@ label_instruction = tk.Label(root, text="Select a CSV file:")
 entry_file_path = tk.Entry(root, width=40)
 button_browse = tk.Button(root, text="Browse", command=browse_file)
 button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=process_benfords_law)
-button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=process_gaussian_distribution)
+button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get()))
 button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get()))
 
 # Arrange widgets in the layout
