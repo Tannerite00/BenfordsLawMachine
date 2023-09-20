@@ -14,4 +14,4 @@ The graph is interactive, so specific items can be viewed together with others o
 
 # Gaussian Distribution
 
-Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small trnasaction it is made clearly visible for the user to see. WIP. 
+Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small trnasaction it is made clearly visible for the user to see. WIP: Plots a normal distribution, but of all totals, not done by each group yet. 
