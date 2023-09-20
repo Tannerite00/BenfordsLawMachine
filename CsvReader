@@ -92,32 +92,52 @@ def process_gaussian_distribution(csv_file_path):
         # Clean and convert 'Total' column values
         data['Total'] = data['Total'].apply(clean_and_convert_total)
 
-        # Remove rows with NaN values in the 'Total' column
-        data = data.dropna(subset=['Total'])
+        # Group transactions by 'Item'
+        grouped_data = data.groupby('Item')
 
-        # Fit a normal distribution to the data
-        mu, std = norm.fit(data['Total'])
+        # Plot Gaussian distributions for each group
+        for item, group_data in grouped_data:
+            # Fit a normal distribution to the data for the current item group
+            mu, std = norm.fit(group_data['Total'])
 
-        # Create a histogram
-        plt.figure(figsize=(10, 6))
-        plt.hist(data['Total'], bins=30, density=True, alpha=0.6, color='blue')
+            # Create a histogram
+            plt.figure(figsize=(10, 6))
+            plt.hist(group_data['Total'], bins=30, density=True, alpha=0.6, color='blue')
 
-        # Create a range of values for the x-axis based on the normal distribution
-        xmin, xmax = plt.xlim()
-        x = np.linspace(xmin, xmax, 100)
-        p = norm.pdf(x, mu, std)
+            # Create a range of values for the x-axis based on the normal distribution
+            xmin, xmax = plt.xlim()
+            x = np.linspace(xmin, xmax, 100)
+            p = norm.pdf(x, mu, std)
 
-        # Plot the fitted normal distribution
-        plt.plot(x, p, 'k', linewidth=2)
-        title = "Fit results: mu = %.2f,  std = %.2f" % (mu, std)
-        plt.title(title)
+            # Plot the fitted normal distribution
+            plt.plot(x, p, 'k', linewidth=2)
+            title = f"Fit results for {item}: mu = {mu:.2f}, std = {std:.2f}"
+            plt.title(title)
 
-        plt.xlabel('Dollars Spent (Total)')
-        plt.ylabel('Frequency')
-        plt.show()
+            plt.xlabel('Dollars Spent (Total)')
+            plt.ylabel('')
+
+            # Calculate and plot the first standard deviation lines
+            std1_left = mu - std
+            std1_right = mu + std
+            plt.axvline(x=std1_left, color='k', linestyle='--', label='1st std dev', linewidth=2)
+            plt.axvline(x=std1_right, color='k', linestyle='--', linewidth=2)
+
+            # Calculate and plot the second standard deviation lines
+            std2_left = mu - 2 * std
+            std2_right = mu + 2 * std
+            plt.axvline(x=std2_left, color='r', linestyle='--', label='2nd std dev', linewidth=2)
+            plt.axvline(x=std2_right, color='r', linestyle='--', linewidth=2)
+
+
+            # Force y-axis ticks to display whole numbers
+            yint = range(min([int(val) for val in plt.yticks()[0]]), max([int(val) for val in plt.yticks()[0]]) + 1)
+            plt.yticks(yint)
+            plt.show()
 
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
+
 
 
 # Function to run transaction analysis 
