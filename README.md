@@ -9,7 +9,7 @@ A graph of the numbers is also created to help the user viusalize the distributi
 
 # Gaussian Distribution
 
-Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small trnasaction it is made clearly visible for the user to see. WIP: Plots a normal distribution for each item group, with first and second std dev lines plotted to easily pick out outliers. 
+Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small transaction it is made clearly visible for the user to see. WIP: Plots a normal distribution for each item group, with first and second std dev lines plotted to easily pick out outliers. 
 
 
 # Transaction Analysis
