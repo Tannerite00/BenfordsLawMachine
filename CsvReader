@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import ttk
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
@@ -24,6 +25,9 @@ def browse_file():
 # Define a function to clean and convert 'Total' values to float
 def clean_and_convert_total(total_str):
     total_str = total_str.replace('$', '').replace(',', '').strip()
+    # Handle negative numbers enclosed in parentheses
+    if total_str.startswith('(') and total_str.endswith(')'):
+        total_str = '-' + total_str[1:-1]
     try:
         return float(total_str)
     except ValueError:
@@ -134,11 +138,11 @@ def process_gaussian_distribution(csv_file_path):
             yint = range(min([int(val) for val in plt.yticks()[0]]), max([int(val) for val in plt.yticks()[0]]) + 1)
             plt.yticks(yint)
             plt.show()
-
+    except ValueError as e:
+        print(f"Error processing data for item {item}: {e}")
+            
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
-
-
 
 # Function to run transaction analysis 
 def analyze_transactions_from_csv(csv_file_path):
@@ -161,6 +165,59 @@ def analyze_transactions_from_csv(csv_file_path):
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
+def show_first_10_rows_as_excel(csv_file_path):
+    try:
+        # Load the first 10 rows of the CSV file into a DataFrame
+        data = pd.read_csv(csv_file_path).head(10)
+
+        # Create an ExcelWriter object
+        writer = pd.ExcelWriter('first_10_rows.xlsx', engine='openpyxl')
+
+        # Write the data to the ExcelWriter object
+        data.to_excel(writer, index=False, sheet_name='Sheet1')
+
+        # Save the data to a temporary Excel file
+        writer.update()
+
+        # Show the Excel-like data in a modal dialog
+        display_data_as_modal(data)
+
+    except FileNotFoundError:
+        print("CSV file not found. Please select a valid CSV file.")
+
+def display_data_as_modal(data):
+    # Create a new tkinter window (modal dialog)
+    modal = tk.Toplevel()
+    modal.title("Data Viewer")
+
+    # Create a Treeview widget to display the data
+    tree = ttk.Treeview(modal)
+
+    # Set the column names based on the DataFrame columns
+    columns = list(data.columns)
+    tree["columns"] = columns
+    tree.heading("#0", text="Row")  # Create a row number column
+
+    for col in columns:
+        tree.heading(col, text=col)
+
+    # Insert data into the Treeview widget
+    for i, row in data.iterrows():
+        tree.insert("", i, text=i, values=list(row))
+
+    # Add a scrollbar to the Treeview widget
+    scrollbar = ttk.Scrollbar(modal, orient="vertical", command=tree.yview)
+    tree.configure(yscroll=scrollbar.set)
+
+    # Pack the Treeview and scrollbar
+    tree.pack(fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    modal.mainloop()
+
+
+
+
 # Create the main application window
 root = tk.Tk()
 root.title("CSV File Processor")
@@ -172,6 +229,7 @@ button_browse = tk.Button(root, text="Browse", command=browse_file)
 button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=process_benfords_law)
 button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get()))
 button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get()))
+button_show_first_10_rows = tk.Button(root, text="Show First 10 Rows", command=lambda: show_first_10_rows_as_excel(entry_file_path.get()))
 
 # Arrange widgets in the layout
 label_instruction.pack()
@@ -180,6 +238,8 @@ button_browse.pack()
 button_process_benfords_law.pack()
 button_process_gaussian.pack()
 button_process_transaction_analysis.pack()
+button_show_first_10_rows.pack()
 
 # Start the Tkinter main loop
 root.mainloop()
+
