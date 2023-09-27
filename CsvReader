@@ -51,12 +51,14 @@ def process_benfords_law():
                 # Join the elements in each row to form a single string
                 row_str = ''.join(row)
 
-                # Iterate through characters in the row
-                for char in row_str:
-                    if char.isdigit() and '1' <= char <= '9':
-                        # Increment the count for the digit
-                        digit_counts[char] += 1
-                        total_digit_count += 1
+                # Use regular expressions to find all leading digits in the row
+                leading_digits = re.findall(r'\b[1-9]\d*', row_str)
+
+                # Iterate through the leading digits
+                for digit_str in leading_digits:
+                    digit = digit_str[0]  # Get the first character (leading digit)
+                    digit_counts[digit] += 1
+                    total_digit_count += 1
 
         # Calculate percentages for each digit
         digit_percentages = {digit: (count / total_digit_count) * 100 if total_digit_count > 0 else 0 for digit, count in digit_counts.items()}
@@ -71,9 +73,9 @@ def process_benfords_law():
 
         # Determine bar colors based on alignment with Benford's Law
         bar_colors = ['blue' if abs(percentage - expected_percentages[digit]) <= 5 else
-                    'yellow' if abs(percentage - expected_percentages[digit]) <= 7.5 else
-                    'orange' if abs(percentage - expected_percentages[digit]) <= 10 else
-                    'red' for digit, percentage in digit_percentages.items()]
+                      'yellow' if abs(percentage - expected_percentages[digit]) <= 7.5 else
+                      'orange' if abs(percentage - expected_percentages[digit]) <= 10 else
+                      'red' for digit, percentage in digit_percentages.items()]
 
         # Plot the bars with colors
         plt.bar(digits, percentages, color=bar_colors, label='Actual Percentages')
@@ -81,9 +83,9 @@ def process_benfords_law():
         # Plot the expected Benford's Law line (red)
         plt.plot(digits, expected_percentages_values, 'r', label='Benford\'s Law')
 
-        plt.xlabel('Digit')
+        plt.xlabel('Leading Digit')
         plt.ylabel('Percentage (%)')
-        plt.title('Digit Percentages vs. Benford\'s Law')
+        plt.title('Leading Digit Percentages vs. Benford\'s Law')
         plt.legend()
         plt.show()
 
