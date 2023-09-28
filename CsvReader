@@ -263,8 +263,8 @@ button_browse.pack()
 button_process_benfords_law.pack()
 button_process_gaussian.pack()
 button_process_transaction_analysis.pack()
-button_show_first_10_rows.pack()
 button_find_duplicate_rows.pack()
+button_show_first_10_rows.pack()
 
 # Start the Tkinter main loop
 root.mainloop()
