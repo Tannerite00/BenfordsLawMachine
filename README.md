@@ -17,10 +17,12 @@ Gives a normal distribution based on the total spent on each Item by each Rep. I
 A simple transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, the graph will sum them but also show a partition to display the different transactions. 
 The graph is interactive, so specific items can be viewed together with others or on their own, and the graph can be zoomed in and out to see all parts of the data or just specific parts the user wants to focus on. 
 
+# Finding Duplicates
+
+Finds duplicate transactions in the data based off of if the Item, Rep, and Total fields match with any of the other data and prints them to a new csv. 
+
 # Showing the CSV in the App
 
 Attempting to render the csv in the app so it can be apparent the correct file was chosen, and to open the door for easier ways to manipulate the data. WIP. 
 
-# Finding Duplicates
 
-Finds duplicate transactions in the data and prints them to a new csv. WIP. 
