@@ -20,3 +20,7 @@ The graph is interactive, so specific items can be viewed together with others o
 # Showing the CSV in the App
 
 Attempting to render the csv in the app so it can be apparent the correct file was chosen, and to open the door for easier ways to manipulate the data. WIP. 
+
+# Finding Duplicates
+
+Finds duplicate transactions in the data and prints them to a new csv. WIP. 
