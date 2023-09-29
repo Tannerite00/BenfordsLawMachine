@@ -23,7 +23,7 @@ Select 3 columns from the drop down menus, an account description (or item categ
 
 # Finding Duplicates
 
-Finds duplicate transactions in the data based off of if the Item, Rep, and Total fields match with any of the other data and prints them to a new csv. 
+Finds duplicate transactions in the data based off of if the 3 columns chosen by the user match with any of the other data and prints them to a new csv. 
 
 # Showing the CSV in the App
 
