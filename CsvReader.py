@@ -221,13 +221,16 @@ def analyze_transactions_from_csv(csv_file_path, col1, col2, col3):
         print("CSV file not found. Please select a valid CSV file.")
 
 #Function to find duplicates in the data
-def find_duplicate_rows(csv_file_path):
+def find_duplicate_rows(csv_file_path, col1, col2, col3):
     try:
         # Load transaction data from the selected CSV file
         data = pd.read_csv(csv_file_path)
+        col1 = var_col1.get()
+        col2 = var_col2.get()
+        col3 = var_col3.get()
 
         # Identify duplicate rows based on 'Item', 'Rep', and 'Total' columns
-        duplicate_rows = data[data.duplicated(subset=['Item', 'Rep', 'Total'], keep=False)]
+        duplicate_rows = data[data.duplicated(subset=[col1, col2, col3], keep=False)]
 
         if not duplicate_rows.empty:
             # Display the duplicate rows
@@ -303,7 +306,7 @@ button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=
 button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get()))
 button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 button_show_first_10_rows = tk.Button(root, text="Show First 10 Rows", command=lambda: show_first_10_rows_as_excel(entry_file_path.get()))
-button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get()))
+button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 
 # Arrange widgets in the layout using grid
 label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
@@ -318,6 +321,3 @@ button_show_first_10_rows.grid(row=4, column=2, padx=10, pady=5)
 
 # Start the Tkinter main loop
 root.mainloop()
-
-
-
