@@ -43,6 +43,7 @@ def browse_file():
         # Call a function to handle the retrieved column names
         handle_column_names(column_names)
 
+# Function to create dropdown menus for column names
 def handle_column_names(column_names):
     global var_col1, var_col2, var_col3  # Access the global variables
 
@@ -83,7 +84,6 @@ def clean_and_convert_total(total_str_or_float):
     else:
         # If it's neither a string nor a float, return NaN
         return np.nan
-
 
 def process_gaussian_distribution(csv_file_path, col1, col3):
     try:
@@ -222,6 +222,7 @@ def analyze_transactions_from_csv(csv_file_path, col1, col2, col3):
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
+# Class that creates the Duplicates modal to display duplicates found in the csv
 class DuplicateViewer(wx.Frame):
     def __init__(self, duplicate_rows):
         super().__init__(None, title="Duplicate Rows Viewer", size=(800, 600))
@@ -278,6 +279,7 @@ def find_duplicate_rows(csv_file_path, col1, col2, col3):
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
+# Class that creates the file view modal to display the csv file in an excel-like format
 class DataViewer(wx.Frame):
     def __init__(self, data):
         super(DataViewer, self).__init__(None, title="Data Viewer")
@@ -303,6 +305,7 @@ class DataViewer(wx.Frame):
         
         self.Show()
 
+# Function that loads the csv file data into the DataViewer class
 def show_excel_file(csv_file_path):
     try:
         # Load the first 10 rows of the CSV file into a DataFrame
