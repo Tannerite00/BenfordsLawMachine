@@ -23,11 +23,14 @@ Select 3 columns from the drop down menus, an account description (or item categ
 
 # Finding Duplicates
 
-Finds duplicate transactions in the data based off of if the 3 columns chosen by the user match with any of the other data, renders it in an excel-like grid in a seperate modal and saves them to a new csv. 
+Finds duplicate transactions in the data based off of if the 3 columns chosen by the user match with any of the other data, renders it in an excel-like grid in a separate modal and saves them to a new csv. 
 
 # Showing the CSV in the App
 
-Renders the csv file chosen as an excel-like sheet in a seperate modal. 
+Renders the csv file chosen as an excel-like sheet in a separate modal. 
+
+# Info
+This brings up a separate modal that contains most of this read me to explain what the various techniques are doing and to give more in-depth instructions. 
 
 # What's Next?
 
