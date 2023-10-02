@@ -56,15 +56,18 @@ def handle_column_names(column_names):
     label_menu1 = tk.Label(root, text="Account Description:")
     label_menu2 = tk.Label(root, text="Transaction Description:")
     label_menu3 = tk.Label(root, text="Transactions:")
-    
+    label_column_instructions1 = tk.Label(root, text="Select 3 columns to run analysis on. The first column is the category you want the data separated by.")
+    label_column_instructions2 = tk.Label(root, text="The second is who/what bought the item/service and the last should be the transactions")
 
     # Grid layout for labels and dropdown menus
-    label_menu1.grid(row=5, column=0, padx=10, pady=5)
-    dropdown_menu1.grid(row=5, column=1, padx=10, pady=5)
-    label_menu2.grid(row=6, column=0, padx=10, pady=5)
-    dropdown_menu2.grid(row=6, column=1, padx=10, pady=5)
-    label_menu3.grid(row=7, column=0, padx=10, pady=5)
-    dropdown_menu3.grid(row=7, column=1, padx=10, pady=5)
+    label_column_instructions1.grid(row=7, column=0, columnspan=2, pady=1)
+    label_column_instructions2.grid(row=8, column=0, columnspan=2, pady=1)
+    label_menu1.grid(row=9, column=0, padx=1, pady=5)
+    dropdown_menu1.grid(row=9, column=1, padx=1, pady=5)
+    label_menu2.grid(row=10, column=0, padx=1, pady=5)
+    dropdown_menu2.grid(row=10, column=1, padx=1, pady=5)
+    label_menu3.grid(row=11, column=0, padx=1, pady=5)
+    dropdown_menu3.grid(row=11, column=1, padx=1, pady=5)
 
 
 # Define a function to clean and convert 'Total' values to float
@@ -147,56 +150,60 @@ def process_benfords_law():
     global total_digit_count  # Declare total_digit_count as a global variable
     global digit_counts  # Declare digit_counts as a global variable
 
-    csv_file_path = entry_file_path.get()
-    if csv_file_path:
-        # Clear the previous counts
-        digit_counts = {str(i): 0 for i in range(1, 10)}
-        total_digit_count = 0
+    try:
+        csv_file_path = entry_file_path.get()
+        if csv_file_path:
+            # Clear the previous counts
+            digit_counts = {str(i): 0 for i in range(1, 10)}
+            total_digit_count = 0
 
-        # Open the CSV file and read its contents
-        with open(csv_file_path, newline='') as csvfile:
-            csvreader = csv.reader(csvfile)
-            for row in csvreader:
-                # Join the elements in each row to form a single string
-                row_str = ''.join(row)
+            # Open the CSV file and read its contents
+            with open(csv_file_path, newline='') as csvfile:
+                csvreader = csv.reader(csvfile)
+                for row in csvreader:
+                    # Join the elements in each row to form a single string
+                    row_str = ''.join(row)
 
-                # Use regular expressions to find all leading digits in the row
-                leading_digits = re.findall(r'\b[1-9]\d*', row_str)
+                    # Use regular expressions to find all leading digits in the row
+                    leading_digits = re.findall(r'\b[1-9]\d*', row_str)
 
-                # Iterate through the leading digits
-                for digit_str in leading_digits:
-                    digit = digit_str[0]  # Get the first character (leading digit)
-                    digit_counts[digit] += 1
-                    total_digit_count += 1
+                    # Iterate through the leading digits
+                    for digit_str in leading_digits:
+                        digit = digit_str[0]  # Get the first character (leading digit)
+                        digit_counts[digit] += 1
+                        total_digit_count += 1
 
-        # Calculate percentages for each digit
-        digit_percentages = {digit: (count / total_digit_count) * 100 if total_digit_count > 0 else 0 for digit, count in digit_counts.items()}
+            # Calculate percentages for each digit
+            digit_percentages = {digit: (count / total_digit_count) * 100 if total_digit_count > 0 else 0 for digit, count in digit_counts.items()}
 
-        # Calculate expected Benford's Law percentages
-        expected_percentages = {str(digit): np.log10(1 + 1 / digit) * 100 for digit in range(1, 10)}
+            # Calculate expected Benford's Law percentages
+            expected_percentages = {str(digit): np.log10(1 + 1 / digit) * 100 for digit in range(1, 10)}
 
-        # Plot the bar chart
-        digits = list(digit_percentages.keys())
-        percentages = list(digit_percentages.values())
-        expected_percentages_values = list(expected_percentages.values())
+            # Plot the bar chart
+            digits = list(digit_percentages.keys())
+            percentages = list(digit_percentages.values())
+            expected_percentages_values = list(expected_percentages.values())
 
-        # Determine bar colors based on alignment with Benford's Law
-        bar_colors = ['blue' if abs(percentage - expected_percentages[digit]) <= 5 else
-                      'yellow' if abs(percentage - expected_percentages[digit]) <= 7.5 else
-                      'orange' if abs(percentage - expected_percentages[digit]) <= 10 else
-                      'red' for digit, percentage in digit_percentages.items()]
+            # Determine bar colors based on alignment with Benford's Law
+            bar_colors = ['blue' if abs(percentage - expected_percentages[digit]) <= 5 else
+                        'yellow' if abs(percentage - expected_percentages[digit]) <= 7.5 else
+                        'orange' if abs(percentage - expected_percentages[digit]) <= 10 else
+                        'red' for digit, percentage in digit_percentages.items()]
 
-        # Plot the bars with colors
-        plt.bar(digits, percentages, color=bar_colors, label='Actual Percentages')
+            # Plot the bars with colors
+            plt.bar(digits, percentages, color=bar_colors, label='Actual Percentages')
 
-        # Plot the expected Benford's Law line (red)
-        plt.plot(digits, expected_percentages_values, 'r', label='Benford\'s Law')
+            # Plot the expected Benford's Law line (red)
+            plt.plot(digits, expected_percentages_values, 'r', label='Benford\'s Law')
 
-        plt.xlabel('Leading Digit')
-        plt.ylabel('Percentage (%)')
-        plt.title('Leading Digit Percentages vs. Benford\'s Law')
-        plt.legend()
-        plt.show()
+            plt.xlabel('Leading Digit')
+            plt.ylabel('Percentage (%)')
+            plt.title('Leading Digit Percentages vs. Benford\'s Law')
+            plt.legend()
+            plt.show()
+    
+    except FileNotFoundError:
+        print("CSV file not found. Please select a valid CSV file.")
 
 # Function to run transaction analysis 
 def analyze_transactions_from_csv(csv_file_path, col1, col2, col3):
@@ -322,24 +329,24 @@ def show_excel_file(csv_file_path):
 
 # Create and configure widgets
 label_instruction = tk.Label(root, text="Select a CSV file:")
-entry_file_path = tk.Entry(root, width=40)
-button_browse = tk.Button(root, text="Browse", command=browse_file)
+entry_file_path = tk.Entry(root, width=60)
+button_browse = tk.Button(root, text="Browse Files", command=browse_file)
 button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=process_benfords_law)
 button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get()))
 button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 button_show_excel_file = tk.Button(root, text="Show Excel File", command=lambda: show_excel_file(entry_file_path.get()))
 button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 
+
 # Arrange widgets in the layout using grid
 label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
-entry_file_path.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
-button_browse.grid(row=1, column=2, padx=10, pady=5)
-button_process_benfords_law.grid(row=3, column=0, padx=10, pady=5)
-button_process_gaussian.grid(row=3, column=1, padx=10, pady=5)
-button_process_transaction_analysis.grid(row=3, column=2, padx=10, pady=5)
-button_find_duplicate_rows.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
-button_show_excel_file.grid(row=4, column=2, padx=10, pady=5)
-
+entry_file_path.grid(row=1, column=0, columnspan=2, padx=1, pady=1)
+button_browse.grid(row=1, column=2, padx=1, pady=1)
+button_process_benfords_law.grid(row=2, column=2, padx=1, pady=1)
+button_process_gaussian.grid(row=3, column=2, padx=1, pady=1)
+button_process_transaction_analysis.grid(row=4, column=2, padx=1, pady=1)
+button_find_duplicate_rows.grid(row=5, column=2, columnspan=2, padx=1, pady=1)
+button_show_excel_file.grid(row=6, column=2, padx=1, pady=1)
 
 # Start the Tkinter main loop
 root.mainloop()
