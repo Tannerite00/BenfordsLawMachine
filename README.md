@@ -16,7 +16,7 @@ Select 3 columns from the drop down menus, an account description (or item categ
 
 # Transaction Analysis
 
-A simple transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, the graph will sum them but also show a partition to display the different transactions. 
+A transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, the graph will sum them but also show a partition to display the different transactions. 
 The graph is interactive, so specific items can be viewed together with others or on their own, and the graph can be zoomed in and out to see all parts of the data or just specific parts the user wants to focus on.
 
 Select 3 columns from the drop down menus, an account description (or item category), the transaction description (what item/service was purchased) and the transaction column (total spent on item). 
@@ -27,6 +27,5 @@ Finds duplicate transactions in the data based off of if the 3 columns chosen by
 
 # Showing the CSV in the App
 
-Attempting to render the csv in the app so it can be apparent the correct file was chosen, and to open the door for easier ways to manipulate the data. WIP. 
-
+Renders the csv file chosen as an excel-like sheet in a seperate modal. 
 
