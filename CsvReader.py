@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 from scipy.stats import norm
+import wx
+import wx.grid 
 import pandas as pd
 import plotly.express as px
 import re
@@ -247,55 +249,43 @@ def find_duplicate_rows(csv_file_path, col1, col2, col3):
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
-def show_first_10_rows_as_excel(csv_file_path):
+class DataViewer(wx.Frame):
+    def __init__(self, data):
+        super(DataViewer, self).__init__(None, title="Data Viewer")
+        self.panel = wx.Panel(self)
+        
+        # Create a grid to display the data
+        self.grid = wx.grid.Grid(self.panel)
+        self.grid.CreateGrid(data.shape[0], data.shape[1])
+        
+        # Set column labels
+        for col, col_label in enumerate(data.columns):
+            self.grid.SetColLabelValue(col, col_label)
+        
+        # Populate the grid with data
+        for row, row_data in data.iterrows():
+            for col, value in enumerate(row_data):
+                self.grid.SetCellValue(row, col, str(value))
+        
+        # Create a sizer to manage layout
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.grid, 1, wx.EXPAND)
+        self.panel.SetSizer(sizer)
+        
+        self.Show()
+
+def show_excel_file(csv_file_path):
     try:
         # Load the first 10 rows of the CSV file into a DataFrame
-        data = pd.read_csv(csv_file_path).head(10)
+        data = pd.read_csv(csv_file_path)
 
-        # Create an ExcelWriter object
-        writer = pd.ExcelWriter('first_10_rows.xlsx', engine='openpyxl')
-
-        # Write the data to the ExcelWriter object
-        data.to_excel(writer, index=False, sheet_name='Sheet1')
-
-        # Save the data to a temporary Excel file
-        writer.update()
-
-        # Show the Excel-like data in a modal dialog
-        display_data_as_modal(data)
+        # Open the data in a wxPython frame
+        app = wx.App(False)
+        frame = DataViewer(data)
+        app.MainLoop()
 
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
-
-def display_data_as_modal(data):
-    # Create a new tkinter window (modal dialog)
-    modal = tk.Toplevel()
-    modal.title("Data Viewer")
-
-    # Create a Treeview widget to display the data
-    tree = ttk.Treeview(modal)
-
-    # Set the column names based on the DataFrame columns
-    columns = list(data.columns)
-    tree["columns"] = columns
-    tree.heading("#0", text="Row")  # Create a row number column
-
-    for col in columns:
-        tree.heading(col, text=col)
-
-    # Insert data into the Treeview widget
-    for i, row in data.iterrows():
-        tree.insert("", i, text=i, values=list(row))
-
-    # Add a scrollbar to the Treeview widget
-    scrollbar = ttk.Scrollbar(modal, orient="vertical", command=tree.yview)
-    tree.configure(yscroll=scrollbar.set)
-
-    # Pack the Treeview and scrollbar
-    tree.pack(fill="both", expand=True)
-    scrollbar.pack(side="right", fill="y")
-
-    modal.mainloop()
 
 
 # Create and configure widgets
