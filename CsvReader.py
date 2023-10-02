@@ -222,7 +222,35 @@ def analyze_transactions_from_csv(csv_file_path, col1, col2, col3):
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
-#Function to find duplicates in the data
+class DuplicateViewer(wx.Frame):
+    def __init__(self, duplicate_rows):
+        super().__init__(None, title="Duplicate Rows Viewer", size=(800, 600))
+        self.panel = wx.Panel(self)
+
+        # Create a grid
+        self.grid = wx.grid.Grid(self.panel)
+        self.grid.CreateGrid(len(duplicate_rows) + 1, duplicate_rows.shape[1])  # Create a grid with one extra row for headers
+
+        # Set column labels from DataFrame
+        for col, col_label in enumerate(duplicate_rows.columns):
+            self.grid.SetCellValue(0, col, col_label)
+
+        # Populate the grid with data
+        for row, (_, row_data) in enumerate(duplicate_rows.iterrows()):
+            for col, cell_value in enumerate(row_data):
+                self.grid.SetCellValue(row + 1, col, str(cell_value))  # Use str() to convert values to strings
+
+        # Auto-size columns
+        for col in range(duplicate_rows.shape[1]):
+            self.grid.AutoSizeColumn(col)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.grid, 1, wx.EXPAND)
+        self.panel.SetSizer(sizer)
+
+        self.Show()
+
+# Function to find duplicates in the data
 def find_duplicate_rows(csv_file_path, col1, col2, col3):
     try:
         # Load transaction data from the selected CSV file
@@ -235,9 +263,10 @@ def find_duplicate_rows(csv_file_path, col1, col2, col3):
         duplicate_rows = data[data.duplicated(subset=[col1, col2, col3], keep=False)]
 
         if not duplicate_rows.empty:
-            # Display the duplicate rows
-            print("Duplicate Rows:")
-            print(duplicate_rows)
+            # Create a wxPython application
+            app = wx.App()
+            DuplicateViewer(duplicate_rows)
+            app.MainLoop()
 
             # Save the duplicate rows to a new CSV file
             duplicate_rows.to_csv('duplicate_rows.csv', index=False)
@@ -295,7 +324,7 @@ button_browse = tk.Button(root, text="Browse", command=browse_file)
 button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=process_benfords_law)
 button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get()))
 button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
-button_show_first_10_rows = tk.Button(root, text="Show First 10 Rows", command=lambda: show_first_10_rows_as_excel(entry_file_path.get()))
+button_show_excel_file = tk.Button(root, text="Show Excel File", command=lambda: show_excel_file(entry_file_path.get()))
 button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 
 # Arrange widgets in the layout using grid
@@ -306,7 +335,7 @@ button_process_benfords_law.grid(row=3, column=0, padx=10, pady=5)
 button_process_gaussian.grid(row=3, column=1, padx=10, pady=5)
 button_process_transaction_analysis.grid(row=3, column=2, padx=10, pady=5)
 button_find_duplicate_rows.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
-button_show_first_10_rows.grid(row=4, column=2, padx=10, pady=5)
+button_show_excel_file.grid(row=4, column=2, padx=10, pady=5)
 
 
 # Start the Tkinter main loop
