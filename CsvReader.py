@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
+from tkinter import messagebox
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
@@ -326,6 +327,34 @@ def show_excel_file(csv_file_path):
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
+def open_info_dialog():
+    # Explanation text
+    explanation_text = """
+    Benford's Law Analysis:
+    
+        A simple python script that takes a CSV and applies Benford's Law to it, where in any financial data typically the leading number 1 appears approx. 30 percent of the time, with a sloping distribution down to 9 that should appear approx. 5 percent of the time.
+    
+        The basic theory is that when someone commits fraud, they do not do it in increments of $10, $20, $100, or $200, instead they do it in $80 or $900 increments. Therefor, if the higher numbers appear more often than the large number average distribution, there is a chance fraud is at play.
+    
+    Gaussian Distribution Analysis:
+
+        Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small transaction it is made clearly visible for the user to see. WIP: Plots a normal distribution for each item group, with first and second std dev lines plotted to easily pick out outliers.
+    
+        Select 3 columns from the drop down menus, an account description (or item category), the transaction description (what item/service was purchased) and the transaction column (total spent on item).
+
+    Transaction Analysis:
+
+     A transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, the graph will sum them but also show a partition to display the different transactions. The graph is interactive, so specific items can be viewed together with others or on their own, and the graph can be zoomed in and out to see all parts of the data or just specific parts the user wants to focus on.
+    
+        Select 3 columns from the drop down menus, an account description (or item category), the transaction description (what item/service was purchased) and the transaction column (total spent on item).
+
+    Finding Duplicates:
+
+        Finds duplicate transactions in the data based off of if the 3 columns chosen by the user match with any of the other data, renders it in an excel-like grid in a seperate modal and saves them to a new csv.
+    """
+
+    messagebox.showinfo("Analysis Explanations", explanation_text)
+
 
 # Create and configure widgets
 label_instruction = tk.Label(root, text="Select a CSV file:")
@@ -336,7 +365,7 @@ button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", comm
 button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 button_show_excel_file = tk.Button(root, text="Show Excel File", command=lambda: show_excel_file(entry_file_path.get()))
 button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
-
+info_button = tk.Button(root, text="Info", command=open_info_dialog)
 
 # Arrange widgets in the layout using grid
 label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
@@ -347,6 +376,7 @@ button_process_gaussian.grid(row=3, column=2, padx=1, pady=1)
 button_process_transaction_analysis.grid(row=4, column=2, padx=1, pady=1)
 button_find_duplicate_rows.grid(row=5, column=2, columnspan=2, padx=1, pady=1)
 button_show_excel_file.grid(row=6, column=2, padx=1, pady=1)
+info_button.grid(row=0, column=2, padx=1, pady=1)
 
 # Start the Tkinter main loop
 root.mainloop()
