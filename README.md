@@ -32,11 +32,12 @@ Renders the csv file chosen as an excel-like sheet in a separate modal.
 # Info
 This brings up a separate modal that contains most of this read me to explain what the various techniques are doing and to give more in-depth instructions. 
 
+# Other Features
+This program is able to handle Advanced Record Definition Editor, AS400, dBASE, M. Access, M. Excel, ODBC, Print Report and Adobe PDF, SAP/AIS, Text, and XML documents as long as they are in table format.
+
 # What's Next?
 
 Create a small display for the file explorer so users can see files in the folder they are working in and easily change between them
 
 Field Statistics: automatic stats that run when the file is selected such as: earliest/latest dates, largest value, number of records, number of valid values, etc.
 
-Upgrade the file browser to be able to handle more than just csv files. Should be able to handle Advanced Record Definition Editor, AS400, dBASE, M. Access, M. Excel, 
-ODBC, Print Report and Adobe PDF, SAP/AIS, Text, XML 
