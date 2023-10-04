@@ -30,19 +30,35 @@ var_col3 = tk.StringVar()
 # Function to handle the file selection
 def browse_file():
     global var_col1, var_col2, var_col3  # Declare them as global
-    file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+    file_path = filedialog.askopenfilename(filetypes=[
+        ("CSV Files", "*.csv"),
+        ("Advanced Record Definition Editor Files", "*.are"),
+        ("AS400 Files", "*.as400"),
+        ("dBASE Files", "*.dbf"),
+        ("Microsoft Access Files", "*.mdb *.accdb"),
+        ("Microsoft Excel Files", "*.xls *.xlsx"),
+        ("ODBC Files", "*.odbc"),
+        ("Print Report Files", "*.pr"),
+        ("Adobe PDF Files", "*.pdf"),
+        ("SAP/AIS Files", "*.sap"),
+        ("Text Files", "*.txt"),
+        ("XML Files", "*.xml"),
+    ])
+    
     if file_path:
         entry_file_path.delete(0, tk.END)  # Clear the entry field
         entry_file_path.insert(0, file_path)  # Set the selected file path
 
-        # Get the list of columns from the CSV file
-        with open(file_path, newline='') as csvfile:
-            csvreader = csv.reader(csvfile)
-            header = next(csvreader)  # Read the header row
-            column_names = header  # Get column names from the header row
-
+        # Get the list of columns based on the file type
+        if file_path.endswith((".csv", ".txt", ".xml")):
+            with open(file_path, newline='') as csvfile:
+                csvreader = csv.reader(csvfile)
+                header = next(csvreader)  # Read the header row
+                column_names = header  # Get column names from the header row
+        
         # Call a function to handle the retrieved column names
         handle_column_names(column_names)
+
 
 # Function to create dropdown menus for column names
 def handle_column_names(column_names):
