@@ -18,6 +18,7 @@ digit_counts = {str(i): 0 for i in range(1, 10)}
 
 # Initialize a variable to count the total number of digits
 total_digit_count = 0
+
 # Create the main application window
 root = tk.Tk()
 root.title("CSV File Processor")
@@ -26,6 +27,9 @@ root.title("CSV File Processor")
 var_col1 = tk.StringVar()
 var_col2 = tk.StringVar()
 var_col3 = tk.StringVar()
+
+# Create a variable to track checkbox state
+checkbox_var = tk.BooleanVar()
 
 # Function to handle the file selection
 def browse_file():
@@ -59,7 +63,6 @@ def browse_file():
         # Call a function to handle the retrieved column names
         handle_column_names(column_names)
 
-
 # Function to create dropdown menus for column names
 def handle_column_names(column_names):
     global var_col1, var_col2, var_col3  # Access the global variables
@@ -86,7 +89,6 @@ def handle_column_names(column_names):
     label_menu3.grid(row=11, column=0, padx=1, pady=5)
     dropdown_menu3.grid(row=11, column=1, padx=1, pady=5)
 
-
 # Define a function to clean and convert 'Total' values to float
 def clean_and_convert_total(total_str_or_float):
     if isinstance(total_str_or_float, str):
@@ -101,25 +103,30 @@ def clean_and_convert_total(total_str_or_float):
     elif isinstance(total_str_or_float, float):
         # If it's already a float, return it as is
         return total_str_or_float
-    else:
-        # If it's neither a string nor a float, return NaN
-        return np.nan
 
-def process_gaussian_distribution(csv_file_path, col1, col3):
+
+# Function to find outliers
+def process_gaussian_distribution(csv_file_path, col1, col3, checkbox_var):
     try:
         # Load transaction data from the selected CSV file
         data = pd.read_csv(csv_file_path)
         col1 = var_col1.get()
         col3 = var_col3.get()
+        check = checkbox_var
 
         # Clean and convert the entire col3 column to float
         data[col3] = data[col3].apply(clean_and_convert_total)
 
         # Group transactions by 'Item'
         grouped_data = data.groupby([col1])
+
         
         # Plot Gaussian distributions for each selected column
         for i, group_data in grouped_data:
+
+            if check:
+                group_data = group_data[group_data[col3] >= 0]  # Exclude negative values
+
             # Fit a normal distribution to the data for the current column
             mu, std = norm.fit(group_data[col3])
 
@@ -161,6 +168,7 @@ def process_gaussian_distribution(csv_file_path, col1, col3):
             
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
+
 
 # Function to process the selected CSV file and run Benford's Law analysis
 def process_benfords_law():
@@ -371,23 +379,24 @@ def open_info_dialog():
 
     messagebox.showinfo("Analysis Explanations", explanation_text)
 
-
 # Create and configure widgets
 label_instruction = tk.Label(root, text="Select a CSV file:")
 entry_file_path = tk.Entry(root, width=60)
 button_browse = tk.Button(root, text="Browse Files", command=browse_file)
 button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=process_benfords_law)
-button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get()))
+button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get(), checkbox_var.get()))
 button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 button_show_excel_file = tk.Button(root, text="Show Excel File", command=lambda: show_excel_file(entry_file_path.get()))
 button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 info_button = tk.Button(root, text="Info", command=open_info_dialog)
+checkbox = tk.Checkbutton(root, text="Exclude Negative Values", variable=checkbox_var)
 
 # Arrange widgets in the layout using grid
 label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
 entry_file_path.grid(row=1, column=0, columnspan=2, padx=1, pady=1)
 button_browse.grid(row=1, column=2, padx=1, pady=1)
 button_process_benfords_law.grid(row=2, column=2, padx=1, pady=1)
+checkbox.grid(row=3, column=1, padx=1, pady=1)
 button_process_gaussian.grid(row=3, column=2, padx=1, pady=1)
 button_process_transaction_analysis.grid(row=4, column=2, padx=1, pady=1)
 button_find_duplicate_rows.grid(row=5, column=2, columnspan=2, padx=1, pady=1)
