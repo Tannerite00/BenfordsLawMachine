@@ -41,3 +41,4 @@ Create a small display for the file explorer so users can see files in the folde
 
 Field Statistics: automatic stats that run when the file is selected such as: earliest/latest dates, largest value, number of records, number of valid values, etc.
 
+Add a way to exclude negatives from the transaction analysis
