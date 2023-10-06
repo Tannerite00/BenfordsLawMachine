@@ -110,7 +110,7 @@ def process_gaussian_distribution(csv_file_path, col1, col3):
         # Load transaction data from the selected CSV file
         data = pd.read_csv(csv_file_path)
         col1 = var_col1.get()
-        col3 = var_col2.get()
+        col3 = var_col3.get()
 
         # Clean and convert the entire col3 column to float
         data[col3] = data[col3].apply(clean_and_convert_total)
