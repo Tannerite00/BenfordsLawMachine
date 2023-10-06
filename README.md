@@ -13,6 +13,7 @@ Gives a normal distribution based on the total spent on each Item by each Rep. I
 
 Select 3 columns from the drop down menus, an account description (or item category), the transaction description (what item/service was purchased) and the transaction column (total spent on item). 
 
+Click the checkbox to exclude all negative values to see how bthe distribution may change. 
 
 # Transaction Analysis
 
