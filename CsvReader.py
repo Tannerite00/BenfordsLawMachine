@@ -63,6 +63,44 @@ def browse_file():
         # Call a function to handle the retrieved column names
         handle_column_names(column_names)
 
+    if file_path:
+        # Load the CSV file
+        df = pd.read_csv(file_path)
+
+    if file_path:
+        # Load the CSV file
+        df = pd.read_csv(file_path)
+
+        # Initialize variables for largest, smallest, and negative values
+        largest_value = None
+        smallest_value = None
+
+        for col in df.columns:
+            for value in df[col]:
+                if isinstance(value, str) and re.match(r'\$\d+\.*\d*', value):
+                    numeric_value = float(re.sub('[^\d.]', '', value))
+                    if largest_value is None or numeric_value > largest_value:
+                        largest_value = numeric_value
+                    if smallest_value is None or numeric_value < smallest_value:
+                        smallest_value = numeric_value
+
+        # Get the number of records
+        num_records = len(df)
+
+        # Create a modal window to display the information
+        modal = tk.Toplevel(root)
+        modal.title("File Information")
+
+        # Display the information
+        label1 = tk.Label(modal, text=f"Number of Records: {num_records}")
+        label2 = tk.Label(modal, text=f"Largest Value: {largest_value}")
+        label3 = tk.Label(modal, text=f"Smallest Value: {smallest_value}")
+
+
+        label1.pack()
+        label2.pack()
+        label3.pack()
+
 # Function to create dropdown menus for column names
 def handle_column_names(column_names):
     global var_col1, var_col2, var_col3  # Access the global variables
@@ -119,6 +157,7 @@ def process_gaussian_distribution(csv_file_path, col1, col3, checkbox_var):
         # Group transactions by 'Item'
         grouped_data = data.groupby([col1])
 
+        
         # Plot Gaussian distributions for each selected column
         for i, group_data in grouped_data:
 
@@ -247,6 +286,7 @@ def analyze_transactions_from_csv(csv_file_path, col1, col2, col3):
         # Show the interactive plot
         fig.show()
 
+
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
@@ -350,25 +390,18 @@ def show_excel_file(csv_file_path):
 def open_info_dialog():
     # Explanation text
     explanation_text = """
-    Benford's Law Analysis:
-        A simple python script that takes a CSV and applies Benford's Law to it, where in any financial data typically the leading number 1 appears approx. 30 percent of the time, with a sloping distribution down to 9 that should appear approx. 5 percent of the time.
-        The basic theory is that when someone commits fraud, they do not do it in increments of $10, $20, $100, or $200, instead they do it in $80 or $900 increments. Therefor, if the higher numbers appear more often than the large number average distribution, there is a chance fraud is at play.
-    
+    Benford's Law Analysis:    
+        A simple python script that takes a CSV and applies Benford's Law to it, where in any financial data typically the leading number 1 appears approx. 30 percent of the time, with a sloping distribution down to 9 that should appear approx. 5 percent of the time.    
+        The basic theory is that when someone commits fraud, they do not do it in increments of $10, $20, $100, or $200, instead they do it in $80 or $900 increments. Therefor, if the higher numbers appear more often than the large number average distribution, there is a chance fraud is at play.    
     Gaussian Distribution Analysis:
-
-        Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small transaction it is made clearly visible for the user to see. WIP: Plots a normal distribution for each item group, with first and second std dev lines plotted to easily pick out outliers.
+        Gives a normal distribution based on the total spent on each Item by each Rep. If there is an abnormally large or small transaction it is made clearly visible for the user to see. WIP: Plots a normal distribution for each item group, with first and second std dev lines plotted to easily pick out outliers.    
         Select 3 columns from the drop down menus, an account description (or item category), the transaction description (what item/service was purchased) and the transaction column (total spent on item).
-
     Transaction Analysis:
-
      A transctional analytics tool that takes 3 variables from a csv: Which Rep bought an item, what Item was bought, and the Total amount spent on an item. if a person bought the same item multiple times, the graph will sum them but also show a partition to display the different transactions. The graph is interactive, so specific items can be viewed together with others or on their own, and the graph can be zoomed in and out to see all parts of the data or just specific parts the user wants to focus on.
         Select 3 columns from the drop down menus, an account description (or item category), the transaction description (what item/service was purchased) and the transaction column (total spent on item).
-
     Finding Duplicates:
-
         Finds duplicate transactions in the data based off of if the 3 columns chosen by the user match with any of the other data, renders it in an excel-like grid in a seperate modal and saves them to a new csv.
     """
-
     messagebox.showinfo("Analysis Explanations", explanation_text)
 
 # Create and configure widgets
