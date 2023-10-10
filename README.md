@@ -33,12 +33,17 @@ Renders the csv file chosen as an excel-like sheet in a separate modal.
 # Info
 This brings up a separate modal that contains most of this read me to explain what the various techniques are doing and to give more in-depth instructions. 
 
+# Field Statistics 
+
+Automatic stats that run when the file is selected such as: number of records, largest value, smallest value, 
+
+Coming soon: largest negative value, number of valid values, earliest/latest dates, and more!
+
 # Other Features
 This program is able to handle Advanced Record Definition Editor, AS400, dBASE, M. Access, M. Excel, ODBC, Print Report and Adobe PDF, SAP/AIS, Text, and XML documents as long as they are in table format.
 
 # What's Next?
 
-Create a small display for the file explorer so users can see files in the folder they are working in and easily change between them
+continue to upgrade field statistics 
 
-Field Statistics: automatic stats that run when the file is selected such as: earliest/latest dates, largest value, number of records, number of valid values, etc.
 
