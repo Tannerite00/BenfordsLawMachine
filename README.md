@@ -42,8 +42,10 @@ Coming soon: largest negative value, number of valid values, earliest/latest dat
 # Other Features
 This program is able to handle Advanced Record Definition Editor, AS400, dBASE, M. Access, M. Excel, ODBC, Print Report and Adobe PDF, SAP/AIS, Text, and XML documents as long as they are in table format.
 
-# What's Next?
+# What Are We Playing With In The Sandbox?
 
-continue to upgrade field statistics 
+Trying to create a modal that allows us to make our own audit templates and store them as JSON files. Add and Delete steps in the audit template and save it. can also load existing ones! 
+
+Currently trying to get the save function to work! 
 
 
