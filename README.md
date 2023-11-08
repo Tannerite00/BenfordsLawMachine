@@ -34,10 +34,12 @@ Renders the csv file chosen as an excel-like sheet in a separate modal.
 This brings up a separate modal that contains most of this read me to explain what the various techniques are doing and to give more in-depth instructions. 
 
 # Field Statistics 
-
 Automatic stats that run when the file is selected such as: number of records, largest value, smallest value, 
-
 Coming soon: largest negative value, number of valid values, earliest/latest dates, and more!
+
+# Training Data
+Added ability to add the selected csv file to a training data csv to have historical records to check analysis against in the future. Currently limited to the max size of an excel sheet (1 million x 1 million). 
+Coming soon: ability to add/exclude specific columns
 
 # Other Features
 This program is able to handle Advanced Record Definition Editor, AS400, dBASE, M. Access, M. Excel, ODBC, Print Report and Adobe PDF, SAP/AIS, Text, and XML documents as long as they are in table format.
