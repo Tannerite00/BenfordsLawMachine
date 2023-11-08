@@ -387,6 +387,43 @@ def show_excel_file(csv_file_path):
     except FileNotFoundError:
         print("CSV file not found. Please select a valid CSV file.")
 
+def append_to_training_data(csv_file_path):
+    file_path = filedialog.askopenfilename(filetypes=[
+        ("CSV Files", "*.csv"),
+        ("Advanced Record Definition Editor Files", "*.are"),
+        ("AS400 Files", "*.as400"),
+        ("dBASE Files", "*.dbf"),
+        ("Microsoft Access Files", "*.mdb *.accdb"),
+        ("Microsoft Excel Files", "*.xls *.xlsx"),
+        ("ODBC Files", "*.odbc"),
+        ("Print Report Files", "*.pr"),
+        ("Adobe PDF Files", "*.pdf"),
+        ("SAP/AIS Files", "*.sap"),
+        ("Text Files", "*.txt"),
+        ("XML Files", "*.xml"),
+    ])
+    
+    if file_path:
+
+        try:
+            # Open the common training data CSV file in append mode
+            with open(file_path, 'a', newline='') as training_data:
+                writer = csv.writer(training_data)
+
+                # Open the selected CSV file
+                with open(csv_file_path, 'r') as selected_csv:
+                    reader = csv.reader(selected_csv) 
+
+                    # Iterate through rows in the selected CSV and append them to the training data
+                    for row in reader:
+                        writer.writerow(row)
+        except pd.errors.EmptyDataError:
+            print("The selected CSV file is empty or has no valid data.", csv_file_path)
+        except pd.errors.ParserError:
+            print("Error parsing the CSV file. Check the file format and structure.")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+
 def open_info_dialog():
     # Explanation text
     explanation_text = """
@@ -424,9 +461,11 @@ button_show_excel_file = tk.Button(root, text="Show Excel File", command=lambda:
 button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
 info_button = tk.Button(root, text="Info", command=open_info_dialog)
 checkbox = tk.Checkbutton(root, text="Exclude Negative Values", variable=checkbox_var)
+add_to_training_data = tk.Button(root, text="Add to Training Data", command=lambda: append_to_training_data(entry_file_path.get()) )
 
 # Arrange widgets in the layout using grid
 label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
+info_button.grid(row=0, column=2, padx=1, pady=1)
 entry_file_path.grid(row=1, column=0, columnspan=2, padx=1, pady=1)
 button_browse.grid(row=1, column=2, padx=1, pady=1)
 button_process_benfords_law.grid(row=2, column=2, padx=1, pady=1)
@@ -435,7 +474,6 @@ button_process_gaussian.grid(row=3, column=2, padx=1, pady=1)
 button_process_transaction_analysis.grid(row=4, column=2, padx=1, pady=1)
 button_find_duplicate_rows.grid(row=5, column=2, columnspan=2, padx=1, pady=1)
 button_show_excel_file.grid(row=6, column=2, padx=1, pady=1)
-info_button.grid(row=0, column=2, padx=1, pady=1)
-
+add_to_training_data.grid(row=7, column=2, padx=1, pady=1)
 # Start the Tkinter main loop
 root.mainloop()
