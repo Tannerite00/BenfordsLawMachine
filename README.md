@@ -53,5 +53,6 @@ Currently trying to get the save function to work!
 Create/Add to historical data for analysis: 
 
 creates a csv that can incorporate other data of the same type, for example if you have a lot of transaction data from different years in different files. can combine them in app and store it so it can be added to later to further enhance the historical data. 
+will add the option to ignore headers when adding data, and possibly be able to custom select the rows/columns uploaded. 
 
 
