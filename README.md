@@ -39,7 +39,7 @@ Coming soon: largest negative value, number of valid values, earliest/latest dat
 
 # Training Data
 Added ability to add the selected csv file to a training data csv to have historical records to check analysis against in the future. Currently limited to the max size of an excel sheet (1 million x 1 million). 
-Coming soon: ability to add/exclude specific columns
+Coming soon: ability to add/exclude specific columns and headers
 
 # Other Features
 This program is able to handle Advanced Record Definition Editor, AS400, dBASE, M. Access, M. Excel, ODBC, Print Report and Adobe PDF, SAP/AIS, Text, and XML documents as long as they are in table format.
@@ -50,9 +50,7 @@ Trying to create a modal that allows us to make our own audit templates and stor
 
 Currently trying to get the save function to work! 
 
-Create/Add to historical data for analysis: 
 
-creates a csv that can incorporate other data of the same type, for example if you have a lot of transaction data from different years in different files. can combine them in app and store it so it can be added to later to further enhance the historical data. 
-will add the option to ignore headers when adding data, and possibly be able to custom select the rows/columns uploaded. 
+
 
 
