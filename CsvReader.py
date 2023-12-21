@@ -3,6 +3,7 @@ from tkinter import filedialog
 from tkinter import ttk
 from tkinter import messagebox
 import csv
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
@@ -12,6 +13,10 @@ import wx.grid
 import pandas as pd
 import plotly.express as px
 import re
+
+
+# Use the Agg backend for non-interactive environments
+matplotlib.use('TkAgg')
 
 # Initialize a dictionary to count digits from 1 to 9
 digit_counts = {str(i): 0 for i in range(1, 10)}
@@ -475,5 +480,6 @@ button_process_transaction_analysis.grid(row=4, column=2, padx=1, pady=1)
 button_find_duplicate_rows.grid(row=5, column=2, columnspan=2, padx=1, pady=1)
 button_show_excel_file.grid(row=6, column=2, padx=1, pady=1)
 add_to_training_data.grid(row=7, column=2, padx=1, pady=1)
+
 # Start the Tkinter main loop
 root.mainloop()
