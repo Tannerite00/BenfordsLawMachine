@@ -14,7 +14,7 @@ import wx.grid
 import pandas as pd
 import plotly.express as px
 import re
-
+import sv_ttk
 
 # Use the Agg backend for non-interactive environments
 matplotlib.use('TkAgg')
@@ -26,7 +26,9 @@ digit_counts = {str(i): 0 for i in range(1, 10)}
 total_digit_count = 0
 
 # Create the main application window
-root = ThemedTk(theme="radiance")
+root = tk.Tk()
+# This is where the magic happens
+sv_ttk.set_theme("dark")
 root.title("CSV File Processor")
 
 # Initialize Tkinter variables for selected column names as globals
@@ -94,13 +96,13 @@ def browse_file():
         num_records = len(df)
 
         # Create a modal window to display the information
-        modal = tk.Toplevel(root)
+        modal = tk.Tk()
         modal.title("File Information")
 
         # Display the information
-        label1 = tk.Label(modal, text=f"Number of Records: {num_records}")
-        label2 = tk.Label(modal, text=f"Largest Value: {largest_value}")
-        label3 = tk.Label(modal, text=f"Smallest Value: {smallest_value}")
+        label1 = ttk.Label(modal, text=f"Number of Records: {num_records}")
+        label2 = ttk.Label(modal, text=f"Largest Value: {largest_value}")
+        label3 = ttk.Label(modal, text=f"Smallest Value: {smallest_value}")
 
 
         label1.pack()
@@ -458,7 +460,7 @@ def open_info_dialog():
 
 # Create and configure widgets
 label_instruction = ttk.Label(root, text="Select a CSV file:")
-entry_file_path = tk.Entry(root, width=60)
+entry_file_path = ttk.Entry(root, width=60)
 button_browse = ttk.Button(root, text="Browse Files", command=browse_file)
 button_process_benfords_law = ttk.Button(root, text="Run Benford's Law", command=process_benfords_law)
 button_process_gaussian = ttk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get(), checkbox_var.get()))
