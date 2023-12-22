@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
+from ttkthemes import ThemedTk
 from tkinter import messagebox
 import csv
 import matplotlib
@@ -25,7 +26,7 @@ digit_counts = {str(i): 0 for i in range(1, 10)}
 total_digit_count = 0
 
 # Create the main application window
-root = tk.Tk()
+root = ThemedTk(theme="radiance")
 root.title("CSV File Processor")
 
 # Initialize Tkinter variables for selected column names as globals
@@ -111,16 +112,16 @@ def handle_column_names(column_names):
     global var_col1, var_col2, var_col3  # Access the global variables
 
     # Create dropdown menus for each column
-    dropdown_menu1 = tk.OptionMenu(root, var_col1, *column_names)
-    dropdown_menu2 = tk.OptionMenu(root, var_col2, *column_names)
-    dropdown_menu3 = tk.OptionMenu(root, var_col3, *column_names)
+    dropdown_menu1 = ttk.OptionMenu(root, var_col1, *column_names)
+    dropdown_menu2 = ttk.OptionMenu(root, var_col2, *column_names)
+    dropdown_menu3 = ttk.OptionMenu(root, var_col3, *column_names)
 
     # Label each dropdown menu
-    label_menu1 = tk.Label(root, text="Account Description:")
-    label_menu2 = tk.Label(root, text="Transaction Description:")
-    label_menu3 = tk.Label(root, text="Transactions:")
-    label_column_instructions1 = tk.Label(root, text="Select 3 columns to run analysis on. The first column is the category you want the data separated by.")
-    label_column_instructions2 = tk.Label(root, text="The second is who/what bought the item/service and the last should be the transactions")
+    label_menu1 = ttk.Label(root, text="Account Description:")
+    label_menu2 = ttk.Label(root, text="Transaction Description:")
+    label_menu3 = ttk.Label(root, text="Transactions:")
+    label_column_instructions1 = ttk.Label(root, text="Select 3 columns to run analysis on. The first column is the category you want the data separated by.")
+    label_column_instructions2 = ttk.Label(root, text="The second is who/what bought the item/service and the last should be the transactions")
 
     # Grid layout for labels and dropdown menus
     label_column_instructions1.grid(row=7, column=0, columnspan=2, pady=1)
@@ -456,17 +457,17 @@ def open_info_dialog():
     messagebox.showinfo("Analysis Explanations", explanation_text)
 
 # Create and configure widgets
-label_instruction = tk.Label(root, text="Select a CSV file:")
+label_instruction = ttk.Label(root, text="Select a CSV file:")
 entry_file_path = tk.Entry(root, width=60)
-button_browse = tk.Button(root, text="Browse Files", command=browse_file)
-button_process_benfords_law = tk.Button(root, text="Run Benford's Law", command=process_benfords_law)
-button_process_gaussian = tk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get(), checkbox_var.get()))
-button_process_transaction_analysis = tk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
-button_show_excel_file = tk.Button(root, text="Show Excel File", command=lambda: show_excel_file(entry_file_path.get()))
-button_find_duplicate_rows = tk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
-info_button = tk.Button(root, text="Info", command=open_info_dialog)
-checkbox = tk.Checkbutton(root, text="Exclude Negative Values", variable=checkbox_var)
-add_to_training_data = tk.Button(root, text="Add to Training Data", command=lambda: append_to_training_data(entry_file_path.get()) )
+button_browse = ttk.Button(root, text="Browse Files", command=browse_file)
+button_process_benfords_law = ttk.Button(root, text="Run Benford's Law", command=process_benfords_law)
+button_process_gaussian = ttk.Button(root, text="Run Gaussian Distribution", command=lambda: process_gaussian_distribution(entry_file_path.get(), var_col1.get(), var_col3.get(), checkbox_var.get()))
+button_process_transaction_analysis = ttk.Button(root, text="Run Transaction Analysis", command=lambda: analyze_transactions_from_csv(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
+button_show_excel_file = ttk.Button(root, text="Show Excel File", command=lambda: show_excel_file(entry_file_path.get()))
+button_find_duplicate_rows = ttk.Button(root, text="Find Duplicates", command=lambda: find_duplicate_rows(entry_file_path.get(), var_col1.get(), var_col2.get(), var_col3.get()))
+info_button = ttk.Button(root, text="Info", command=open_info_dialog)
+checkbox = ttk.Checkbutton(root, text="Exclude Negative Values", variable=checkbox_var)
+add_to_training_data = ttk.Button(root, text="Add to Training Data", command=lambda: append_to_training_data(entry_file_path.get()) )
 
 # Arrange widgets in the layout using grid
 label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
