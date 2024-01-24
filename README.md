@@ -46,9 +46,12 @@ This program is able to handle Advanced Record Definition Editor, AS400, dBASE, 
 
 # What Are We Playing With In The Sandbox?
 
-Trying to create a modal that allows us to make our own audit templates and store them as JSON files. Add and Delete steps in the audit template and save it. can also load existing ones! 
+1. Trying to create a modal that allows us to make our own audit templates and store them as JSON files. Add and Delete steps in the audit template and save it. can also load existing ones! 
+   Currently trying to get the save function to work!
 
-Currently trying to get the save function to work! 
+2. Running operations on specific columns, average, median, etc. 
+
+
 
 
 
